@@ -1,67 +1,25 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import { Book } from "./models/bookModels.js";
+import cors from "cors";
+import booksRoute from "./routes/bookRouter.js";
 
 
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cors({
+    origin: "http://localhost:3000",
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type']
+}));
 
 app.get("/", (req, res) => {
     console.log(req);
     res.status(234).send("Hello World!");
 })
 
-app.post('/books', async (req, res) => {
-    try {
-        if (
-            !req.body.title ||
-            !req.body.author ||
-            !req.body.publishYear
-        ) {
-            return response.status(400).send({
-                message: 'Send all required fields: title, author, publishYear',
-            });
-        }
-        const newBook = {
-            title:req.body.title,
-            author:req.body.author,
-            publishYear:req.body.publishYear
-        };
-        const book = await Book.create(newBook);
-        return res.status(201).send(book);
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ message: error.message });
-    }
-});
-
-app.get("/books", async (req,res) => {
-    try {
-    const books = await Book.find({});
-    return res.status(200).json({
-        count:books.length,
-        data:books
-    })
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ message:error.message})
-    }
-});
-
-app.get("/books/:id", async (req, res) => {
-    try {
-        const {id} = req.params;
-        const book = await Book.findById(id);
-        return res.status(200).json(book)
-    } catch (error) {
-        console.log(error.message);
-        res.status(500).send({ message: error.message })
-    }
-})
-
-
+app.use("/books", booksRoute)
 
 const PORT = process.env.PORT || 5000;
 
