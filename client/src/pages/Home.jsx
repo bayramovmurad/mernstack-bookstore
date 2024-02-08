@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Spinner from '../components/Spinner';
 import { Link } from 'react-router-dom';
@@ -18,7 +18,6 @@ const Home = () => {
     setLoading(true);
     try {
       const res = await axios.get('http://localhost:5000/books');
-      console.log(res);
       setBooks(res.data.data);
       setLoading(false);
     } catch (error) {
@@ -70,7 +69,7 @@ const Home = () => {
                 </td>
                 <td className='border border-slate-700 rounded-md text-center'>
                   <div className='flex justify-center gap-x-4'>
-                    <Link to={`/books/details/ ${book._id}`}>
+                    <Link to={`/books/details/${book._id}`}>
                       <BsInfoCircle className='text-2x1 text-green-800' />
                     </Link>
                     <Link to={`/books/edit/${book._id}`}>
